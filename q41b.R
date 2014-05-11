@@ -64,7 +64,7 @@ r <- mapply(function(i,j) {
 }, intervals, simulations)
 r["name",] -> colnames(r)
 r <- r[rownames(r) != "name", ]
-r <- cbind(c(exp(mu*T), 
+r <- cbind(Theoretical=c(exp(mu*T), 
                          (mu-sigma^2/2)*T, 
                          exp(2*mu*T)*(exp(sigma^2*T)-1),
                          sigma^2*T), r)
