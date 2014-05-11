@@ -1,22 +1,4 @@
-stoch.process <- function(mu, sigma, T) {
-  function(init, n, M) {
-    dt <- T / n
-    X <- rep(init, M)
-    dim(X) <- c(M, 1)
-    A <- X
-    t <- 0
-    
-    for (i in seq(1, T * n)) {
-      dx <- mapply(mu, X, rep(t, M)) * dt + 
-        mapply(sigma, X, rep(t, M)) * rnorm(M, sd=sqrt(dt))
-      X <- X + dx
-      t <- t + dt
-      A <- cbind(A, X)
-    }
-    
-    A
-  }
-}
+source("common.R")
 
 set.seed(1002)
 wiener <- stoch.process(mu = function(x,t) 0, 
@@ -26,27 +8,47 @@ P1 <- wiener(init = 1, n = 100, M = 1000)
 
 x <- seq(0, 1, 1 / 100)
 cols <- rainbow(10, alpha=.8)
+pdf("figure01.pdf")
 plot(x, P1[1,], type="l", 
      main="Sample paths for a pure Wiener process",
      xlab="time t", ylab="Wiener process", ylim=range(P1))
-for (i in 2:100) lines(x, P1[i,], col=cols[i %% length(cols)])
+for (i in 2:1000) lines(x, P1[i,], col=cols[i %% length(cols)])
+dev.off()
 
-hist(P1[,51], breaks=50, density=20, prob=T,
+pdf("figure02.pdf", width=14, height=7)
+p <- par(no.readonly=TRUE)
+par(mfrow=c(1, 2))
+hist(P1[,51], breaks=50, density=20, prob=TRUE,
      main="Sample distribution at t=0.5", xlab="Wiener process")
-curve(dnorm(x, mean=1, sd=sqrt(.5)), col="darkblue", lwd=2, add=T)
-hist(P1[,101], breaks=50, density=20, prob=T, 
+curve(dnorm(x, mean=1, sd=sqrt(.5)), col="darkblue", lwd=2, add=TRUE)
+hist(P1[,101], breaks=50, density=20, prob=TRUE, 
      main="Sample distribution at t=1", xlab="Wiener process")
-curve(dnorm(x, mean=1, sd=1), col="darkblue", lwd=2, add=T)
+curve(dnorm(x, mean=1, sd=1), col="darkblue", lwd=2, add=TRUE)
+par(p)
+dev.off()
 
 # ii)
-p <- par(no.readonly=T)
-par(mfrow=c(2,2))
-for (i in c(100, 1000)) {
-  for (j in c(1000, 10000)) {
-    P <- wiener(init = 1, n = i, M = j)
-    hist(P[, i / 2 + 1], breaks=50, density=20, prob=T,
-         main=paste("n =",i,"; M =", j), xlab="Wiener process")
-    curve(dnorm(x, mean=1, sd=sqrt(.5)), col="darkblue", lwd=2, add=T)
-  }
-}
+wiener <- stoch.process.const(mu=0, sigma=1, T=1)
+num.intervals <- c(100, 1000, 5000)
+num.simulations <- c(1000, 10000, 50000)
+pdf("figure03.pdf")
+p <- par(no.readonly=TRUE)
+par(mfrow=c(length(num.intervals), length(num.simulations)))
+
+intervals <- rep(num.intervals, each=length(num.simulations))
+simulations <- rep(num.simulations, times=length(num.intervals))
+r <- mapply(function(i,j) {
+  P <- wiener(init=1, n=i, M=j)
+  hist(P[, i + 1], breaks=50, density=20, prob=TRUE,
+       main=paste("n =",i,"; M =", j), xlab="Wiener process")
+  curve(dnorm(x, mean=1, sd=1), col="darkblue", lwd=2, add=TRUE)    
+  list("name"=sprintf("n=%d, M=%d", i, j), 
+       "mean at t=0.5"=mean(P[, i/2+1]),
+       "mean at t=1"=mean(P[,i+1]),
+       "variance at t=0.5"=var(P[, i/2+1]),
+       "variance at t=1"=var(P[, i+1]))
+}, intervals, simulations)
+r["name",] -> colnames(r)
+r <- r[rownames(r) != "name", ]
 par(p)
+dev.off()
