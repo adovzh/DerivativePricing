@@ -33,10 +33,10 @@ pdf("figure05.pdf", width=14, height=7)
 p <- par(no.readonly=TRUE)
 par(mfrow=c(1, 2))
 hist(X[, n+1], breaks=50, density=20, prob=TRUE,
-     main="Sample distribution at t=2", xlab="Log GBM process")
+     main="Sample distribution at t=2", xlab="GBM process")
 curve(dlnorm(x, meanlog=(mu-sigma*sigma/2)*T, sdlog=sigma*sqrt(T)), col="darkblue", lwd=2, add=TRUE)
 hist(Y[, n+1], breaks=50, density=20, prob=TRUE, 
-     main="Sample distribution at t=2", xlab="GBM process")
+     main="Sample distribution at t=2", xlab="Log GBM process")
 curve(dnorm(x, mean=(mu-sigma*sigma/2)*T, sd=sigma*sqrt(T)), col="darkblue", lwd=2, add=TRUE)
 par(p)
 dev.off()
@@ -72,3 +72,5 @@ r <- cbind(Theoretical=c(exp(mu*T),
                          sigma^2*T), r)
 par(p)
 dev.off()
+
+write.csv(r, file="r2.csv")

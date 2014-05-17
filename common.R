@@ -1,3 +1,4 @@
+# mu and sigma are functions (x,t) here
 stoch.process <- function(mu, sigma, T) {
   function(init, n, M) {
     dt <- T / n
@@ -29,12 +30,14 @@ stoch.process.const <- function(mu, sigma, T) {
   }
 }
 
+# theoretical mean function of O-U process
 ou.mean.gen <- function(k, mu, x0) {
   function(t) {
     x0*exp(-k*t) + mu*(1-exp(-k*t))
   }
 }
 
+# theoretical standard deviation of O-U process
 ou.sd.gen <- function(k, sigma) {
   function(t) {
     sqrt(sigma^2/(2*k)*(1-exp(-2*k*t)))

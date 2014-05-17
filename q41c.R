@@ -46,12 +46,13 @@ curve(dnorm(x,
 par(p)
 dev.off()
 
-r <- data.frame(actual=c(mean(ou[, n/2+1]), mean(ou[, n+1]),
-                         var(ou[, n/2+1]), var(ou[, n+1])),
-                theoretical=c(ou.mean(0.5), ou.mean(1),
+r <- data.frame(theoretical=c(ou.mean(0.5), ou.mean(1),
                               ou.sd(0.5)^2, ou.sd(1)^2),
+                actual=c(mean(ou[, n/2+1]), mean(ou[, n+1]),
+                         var(ou[, n/2+1]), var(ou[, n+1])),
                 names=c("mean of OU(1/2)", 
                         "mean of OU(1)", 
                         "variance of OU(1/2)",
                         "variance of OU(1)"),
                 row.names="names")
+write.csv(r, "r3.csv")
