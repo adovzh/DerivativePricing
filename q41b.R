@@ -1,10 +1,12 @@
 source("common.R")
 
+set.seed(1003)
+
 mu <- .15
 sigma <- .2
 T <- 2
 n <- 100
-M=1000
+M <- 1000
 
 Y <- stoch.process.const(mu=mu-sigma*sigma/2, sigma=sigma, T=T)(init=0, n=n, M=M)
 X <- exp(Y)
@@ -16,7 +18,7 @@ par(mfrow=c(1, 2))
 
 plot(x, X[1,], type="l", 
      main="Sample paths for Geometric Brownian Motion process",
-     xlab="time t", ylab="x(t)", ylim=range(X))
+     xlab="time t", ylab="process", ylim=range(X))
 for (i in 2:M) lines(x, X[i,], col=cols[i %% length(cols)])
 
 plot(x, Y[1,], type="l", 
@@ -34,7 +36,7 @@ hist(X[, n+1], breaks=50, density=20, prob=TRUE,
      main="Sample distribution at t=2", xlab="Log GBM process")
 curve(dlnorm(x, meanlog=(mu-sigma*sigma/2)*T, sdlog=sigma*sqrt(T)), col="darkblue", lwd=2, add=TRUE)
 hist(Y[, n+1], breaks=50, density=20, prob=TRUE, 
-     main="Sample distribution at t=1", xlab="GBM process")
+     main="Sample distribution at t=2", xlab="GBM process")
 curve(dnorm(x, mean=(mu-sigma*sigma/2)*T, sd=sigma*sqrt(T)), col="darkblue", lwd=2, add=TRUE)
 par(p)
 dev.off()

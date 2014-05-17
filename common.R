@@ -6,7 +6,7 @@ stoch.process <- function(mu, sigma, T) {
     A <- X
     t <- 0
     
-    for (i in seq(1, T * n)) {
+    for (i in seq(1, n)) {
       dx <- mapply(mu, X, rep(t, M)) * dt + 
         mapply(sigma, X, rep(t, M)) * rnorm(M, sd=sqrt(dt))
       X <- X + dx
@@ -26,5 +26,17 @@ stoch.process.const <- function(mu, sigma, T) {
     dim(A) <- c(M, n)
     A <- cbind(rep(init, M), A)
     A <- t(apply(A, 1, cumsum))
+  }
+}
+
+ou.mean.gen <- function(k, mu, x0) {
+  function(t) {
+    x0*exp(-k*t) + mu*(1-exp(-k*t))
+  }
+}
+
+ou.sd.gen <- function(k, sigma) {
+  function(t) {
+    sqrt(sigma^2/(2*k)*(1-exp(-2*k*t)))
   }
 }

@@ -50,5 +50,8 @@ r <- mapply(function(i,j) {
 }, intervals, simulations)
 r["name",] -> colnames(r)
 r <- r[rownames(r) != "name", ]
+r <- cbind(Theoretical=c(1, 1, 0.5, 1), r)
 par(p)
 dev.off()
+
+write.csv(r, file="r.csv")
