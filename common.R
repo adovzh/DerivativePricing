@@ -1,3 +1,6 @@
+# common.R
+# Functions used in all the questions
+
 # mu and sigma are functions (x,t) here
 stoch.process <- function(mu, sigma, T) {
   function(init, n, M) {

@@ -61,9 +61,4 @@ report["names",] -> colnames(report)
 report <- report[rownames(report) != "names", ]
 report <- cbind(Theoretical=c(tmean, tvar), report)
                 
-
-# report <- data.frame(Theoretical=c(0, theor.var(k, t)),
-#                      Actual=c(mean(Y), var(Y)),
-#                      names=c("Mean of Y(1)", "Variance of Y(1)"),
-#                      row.names="names")
 write.csv(report, file="r5.csv")
